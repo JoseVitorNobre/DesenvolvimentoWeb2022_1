@@ -22,7 +22,7 @@ import IMC from './components/imc/IMC';
 function App() {
   return (
     <div className="App">
-      <IMC altura={1.75} peso={85}/>
+      <IMC altura={1.75} peso={80}/>
     </div>
   );
 }
