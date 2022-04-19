@@ -1,24 +1,24 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
-import { students } from "./data";
+import { teachers } from "./data";
 
 const EditTeacher = () =>{
     const [name, setName] = useState("");
-    const [course, setCourse] = useState("");
-    const [ira, setIra] = useState(0);
+    const [university, setUniversity] = useState("");
+    const [degree, setDegree] = useState("");
 
     const params = useParams();
     useEffect(
         ()=>{
-            const student = students[params.id]
-            setName(student.name)
-            setCourse(student.course)
-            setIra(student.ira)
+            const teacher = teachers[params.id]
+            setName(teacher.name)
+            setUniversity(teacher.university)
+            setDegree(teacher.degree)
         }
     )
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
-        alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
+        alert(`Nome: ${name} \nUniversidade: ${university}\nTitulacao: ${degree}`)
     }
     return(
         <div>
@@ -34,21 +34,21 @@ const EditTeacher = () =>{
                            />
                 </div>
                 <div className="form-group">
-                    <label>Curso</label>
+                    <label>Universidade</label>
                     <input type="text" 
                            className="form-control"
-                           value={(course==null || course===undefined ? "" : course)}
-                           name="course"
-                           onChange={(event)=>setCourse(event.target.value)}
+                           value={(university==null || university===undefined ? "" : university)}
+                           name="university"
+                           onChange={(event)=>setUniversity(event.target.value)}
                            />
                 </div>
                 <div className="form-group">
-                    <label>IRA</label>
+                    <label>Titulação</label>
                     <input type="text" 
                            className="form-control"
-                           value={(ira==null || ira===undefined ? 0 : ira)}
-                           name="ira"
-                           onChange={(event)=>setIra(event.target.value)}
+                           value={(degree==null || degree===undefined ? "" : degree)}
+                           name="degree"
+                           onChange={(event)=>setDegree(event.target.value)}
                            />
                 </div>
                 <div className="form-group" style={{paddingTop: 10}}>

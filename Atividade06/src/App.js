@@ -20,18 +20,14 @@ const App = () =>{
                     <ul className="navbar-nav mr-auto">
                         <li className="navitem"><Link to="/" className="nav-link">Home</Link></li>
                         <li className="navitem"><Link to="about" className="nav-link">Sobre</Link></li>
-                        <NavDropdown title="Link" id="navbarScrollingDropdown">
-                            <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action5">
-                                Something else here
-                        </NavDropdown.Item>
+                        <NavDropdown title="Estudante" id="navbarScrollingDropdown">
+                            <NavDropdown.Item><Link to="createStudent" className="btn" style={{paddingLeft:0}}>Criar Estudante</Link></NavDropdown.Item>
+                            <NavDropdown.Item><Link to="listStudent" className="btn" style={{paddingLeft:0}}>Listar Estudante</Link></NavDropdown.Item>
                         </NavDropdown>
-                        <li className="navitem"><Link to="createStudent" className="nav-link">Criar Estudante</Link></li>
-                        <li className="navitem"><Link to="listStudent" className="nav-link">Listar Estudante</Link></li>
-                        <li className="navitem"><Link to="createTeacher" className="nav-link">Criar Professor</Link></li>
-                        <li className="navitem"><Link to="listTeacher" className="nav-link">Listar Professor</Link></li>
+                        <NavDropdown title="Professor" id="navbarScrollingDropdown">
+                            <NavDropdown.Item><Link to="createTeacher" className="btn" style={{paddingLeft:0}}>Criar Professor</Link></NavDropdown.Item>
+                            <NavDropdown.Item><Link to="listTeacher" className="btn" style={{paddingLeft:0}}>Listar Professor</Link></NavDropdown.Item>
+                        </NavDropdown>
                         {/* Não criamos o li do editStudent pq ele vai ser chamado no listStudent */}
                     </ul>
                 </div>

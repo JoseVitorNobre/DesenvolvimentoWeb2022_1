@@ -1,19 +1,19 @@
 import React from "react";
-import { students } from "./data";
-import StudentTableRow from "./StudentTableRow";
+import { teachers } from "./data";
+import TeacherTableRow from "./TeacherTableRow";
 const ListTeacher = () =>{
     function generateTable(){
-    if(!students) return
-        return students.map(
-            (student,i)=>{
-                return <StudentTableRow student={student} key={i}/>
+    if(!teachers) return
+        return teachers.map(
+            (teacher,i)=>{
+                return <TeacherTableRow teacher={teacher} key={i}/>
             }
         );
         
     }
     return(
         <div>
-            <h2>Listar Estudante</h2>
+            <h2>Listar Professor</h2>
             <table className="table table-striped">
                 <thead>
                     <th>ID</th>
