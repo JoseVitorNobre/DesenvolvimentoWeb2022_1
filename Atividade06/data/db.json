@@ -23,18 +23,6 @@
       "name": "Beltrano de Tal",
       "course": "Sistemas de Informação",
       "ira": 7.8
-    },
-    {
-      "name": "Crispin da Silva",
-      "course": "Biologia",
-      "ira": "7",
-      "id": 4
-    },
-    {
-      "name": "José Vitor ",
-      "course": "Engenharia de Software",
-      "ira": "8",
-      "id": 5
     }
   ],
   "professors": [

@@ -8,7 +8,6 @@ const StudentTableRow = ({student})=>{
         .then(
             response=>{
                 console.log(`Registro ${id} apagado`)
-                deleteStudentById(id)
             }
         )
         .catch(error=>console.log(error))
@@ -21,7 +20,7 @@ const StudentTableRow = ({student})=>{
             <td>{course}</td>
             <td>{ira}</td>
             <td><Link to={`/editStudent/${id}`} className="btn btn-warning">Editar</Link></td>
-            <td><button className="btn btn-danger">Apagar</button></td>
+            <td><button className="btn btn-danger" onClick={deleteStudent}>Apagar</button></td>
         </tr>
     )
 }
