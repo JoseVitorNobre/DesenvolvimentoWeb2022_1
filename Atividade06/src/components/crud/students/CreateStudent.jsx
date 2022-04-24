@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import axios from "axios";
 
 const CreateStudent = () =>{
     const [name, setName] = useState("");
@@ -7,6 +8,20 @@ const CreateStudent = () =>{
 
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
+        event.preventDefault()
+
+        const newStudent = { name, course, ira }
+        axios.post('http://localhost:3001/students', newStudent)
+            .then(
+                (res) => {
+                    console.log(res.data.id)
+                }
+            )
+            .catch(
+                (error) => {
+                    console.log(error)
+                }
+            )
         alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
     }
     return(

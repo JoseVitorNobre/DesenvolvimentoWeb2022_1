@@ -1,15 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 import './App.css'
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Link } from "react-router-dom";
+
 import Home from './components/Home';
 import About from './components/About';
+
 import CreateStudent from './components/crud/students/CreateStudent';
 import ListStudent from './components/crud/students/ListStudent';
 import EditStudent from './components/crud/students/EditStudent';
+
 import CreateTeacher from './components/crud/teacher/CreateTeacher';
 import ListTeacher from './components/crud/teacher/ListTeacher';
 import EditTeacher from './components/crud/teacher/EditTeacher';
+
 import { NavDropdown } from 'react-bootstrap';
 const App = () =>{
     return(

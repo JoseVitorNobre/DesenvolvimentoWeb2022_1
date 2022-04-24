@@ -1,7 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const StudentTableRow = (props)=>{
-    const {id, name, course, ira} = props.student;
+import axios from "axios";
+const StudentTableRow = ({student})=>{
+    const {id, name, course, ira} = student;
+    function deleteStudent() {
+        axios.delete(`http://localhost:3001/students/${id}`)
+        .then(
+            response=>{
+                console.log(`Registro ${id} apagado`)
+                deleteStudentById(id)
+            }
+        )
+        .catch(error=>console.log(error))
+    }
+
     return(
         <tr>
             <td>{id}</td>
