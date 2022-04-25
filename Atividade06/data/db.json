@@ -17,20 +17,14 @@
       "course": "Sistemas de Informação",
       "ira": 9,
       "id": 2
-    },
-    {
-      "id": 3,
-      "name": "Beltrano de Tal",
-      "course": "Sistemas de Informação",
-      "ira": 7.8
     }
   ],
-  "professors": [
+  "teachers": [
     {
-      "id": 0,
-      "name": "wladimir",
-      "university": "ufc",
-      "degree": "doutorado"
+      "name": "Aragão",
+      "university": "UFC - Quixada",
+      "degree": "Doutorado",
+      "id": 0
     }
   ]
 }

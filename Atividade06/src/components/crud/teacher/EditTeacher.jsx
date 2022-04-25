@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
-import { teachers } from "./data";
+// import { teachers } from "./data";
+import axios from "axios";
 
-const EditTeacher = () =>{
+const EditTeacher = (props) =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
@@ -10,15 +11,39 @@ const EditTeacher = () =>{
     const params = useParams();
     useEffect(
         ()=>{
-            const teacher = teachers[params.id]
-            setName(teacher.name)
-            setUniversity(teacher.university)
-            setDegree(teacher.degree)
+            axios.get('http://localhost:3001/teachers/' + params.id)
+                .then(
+                    (res) => {
+                        setName(res.data.name)
+                        setUniversity(res.data.university)
+                        setDegree(res.data.degree)
+                    }
+                )
+                .catch(
+                    (error) => {
+                        console.log(error)
+                    }
+                )
         }
+        ,
+        [params.id]
     )
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
-        alert(`Nome: ${name} \nUniversidade: ${university}\nTitulacao: ${degree}`)
+        event.preventDefault()
+        const updatedStudent =
+        {
+           name,university,degree
+        }
+        axios.put('http://localhost:3001/teachers/' + params.id, updatedStudent)
+            .then(
+                res => {
+                    //console.log(res.data)
+                    //props.history.push('/listStudent');
+                    console.log(props)
+                }
+            )
+            .catch(error => console.log(error))
     }
     return(
         <div>

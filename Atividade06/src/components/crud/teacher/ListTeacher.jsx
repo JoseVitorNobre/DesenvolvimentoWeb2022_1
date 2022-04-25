@@ -1,15 +1,34 @@
-import React from "react";
-import { teachers } from "./data";
+import React, { useEffect, useState } from "react";
+// import { teachers } from "./data";
 import TeacherTableRow from "./TeacherTableRow";
+import axios from "axios";
+
 const ListTeacher = () =>{
+    const [teachers, setTeachers] = useState([])
+    useEffect(
+        () => {
+            axios.get("http://localhost:3001/teachers")
+                .then(
+                    (res) => {
+                        setTeachers(res.data)
+                    }
+                )
+                .catch(
+                    (error) => {
+                        console.log(error)
+                    }
+                )
+        }
+        ,
+        []
+    )
     function generateTable(){
-    if(!teachers) return
-        return teachers.map(
-            (teacher,i)=>{
-                return <TeacherTableRow teacher={teacher} key={i}/>
-            }
-        );
-        
+        if(!teachers) return
+            return teachers.map(
+                (teacher,i)=>{
+                    return <TeacherTableRow teacher={teacher} key={i}/>
+                }
+            );
     }
     return(
         <div>
