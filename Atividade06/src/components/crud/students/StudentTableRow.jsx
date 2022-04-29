@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 const StudentTableRow = ({student})=>{
-    const {id, name, course, ira} = student;
+    const {_id, name, course, ira} = student;
     function deleteStudent() {
-        axios.delete(`http://localhost:3001/students/${id}`)
+        axios.delete(`http://localhost:3002/crud/students/delete/${_id}`)
         .then(
             response=>{
-                console.log(`Registro ${id} apagado`)
+                console.log(`Registro ${_id} apagado`)
             }
         )
         .catch(error=>console.log(error))
@@ -15,11 +15,11 @@ const StudentTableRow = ({student})=>{
 
     return(
         <tr>
-            <td>{id}</td>
+            <td>{_id}</td>
             <td>{name}</td>
             <td>{course}</td>
             <td>{ira}</td>
-            <td><Link to={`/editStudent/${id}`} className="btn btn-warning">Editar</Link></td>
+            <td><Link to={`/editStudent/${_id}`} className="btn btn-warning">Editar</Link></td>
             <td><button className="btn btn-danger" onClick={deleteStudent}>Apagar</button></td>
         </tr>
     )

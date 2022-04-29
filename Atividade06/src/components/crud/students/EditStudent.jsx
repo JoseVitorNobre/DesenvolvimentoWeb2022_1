@@ -11,7 +11,7 @@ const EditStudent = (props) =>{
     const params = useParams();
     useEffect(
         ()=>{
-            axios.get('http://localhost:3001/students/' + params.id)
+            axios.get('http://localhost:3002/crud/students/update/' + params.id)
                 .then(
                     (res) => {
                         setName(res.data.name)
@@ -35,7 +35,7 @@ const EditStudent = (props) =>{
         {
            name,course,ira
         }
-        axios.put('http://localhost:3001/students/' + params.id, updatedStudent)
+        axios.put('http://localhost:3002/crud/students/update/' + params.id, updatedStudent)
             .then(
                 res => {
                     //console.log(res.data)
@@ -44,6 +44,7 @@ const EditStudent = (props) =>{
                 }
             )
             .catch(error => console.log(error))
+        alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
     }
     return(
         <div>

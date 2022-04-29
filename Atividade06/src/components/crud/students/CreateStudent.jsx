@@ -11,10 +11,10 @@ const CreateStudent = () =>{
         event.preventDefault()
 
         const newStudent = { name, course, ira }
-        axios.post('http://localhost:3001/students', newStudent)
+        axios.post('http://localhost:3002/crud/students/create', newStudent)
             .then(
                 (res) => {
-                    console.log(res.data.id)
+                    console.log(res.data._id)
                 }
             )
             .catch(

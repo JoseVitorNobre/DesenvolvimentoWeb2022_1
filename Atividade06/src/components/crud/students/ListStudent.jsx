@@ -7,7 +7,7 @@ const ListStudent = () =>{
     const [students, setStudents] = useState([])
     useEffect(
         () => {
-            axios.get("http://localhost:3001/students")
+            axios.get("http://localhost:3002/crud/students/list")   
                 .then(
                     (res) => {
                         setStudents(res.data)
