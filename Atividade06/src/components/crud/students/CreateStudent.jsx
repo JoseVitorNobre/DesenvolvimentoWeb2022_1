@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const CreateStudent = () =>{
     const [name, setName] = useState("");
     const [course, setCourse] = useState("");
     const [ira, setIra] = useState(0);
-
+    const navigate = useNavigate();
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
@@ -15,6 +15,8 @@ const CreateStudent = () =>{
             .then(
                 (res) => {
                     console.log(res.data._id)
+                    alert("Aluno criado")
+                    navigate("/listStudent")
                 }
             )
             .catch(
@@ -22,7 +24,7 @@ const CreateStudent = () =>{
                     console.log(error)
                 }
             )
-        alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
+        // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
     }
     return(
         <div>

@@ -1,16 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-const StudentTableRow = ({student})=>{
-    const {_id, name, course, ira} = student;
+const StudentTableRow = (props)=>{
+    const {_id, name, course, ira} = props.student;
     function deleteStudent() {
-        axios.delete(`http://localhost:3002/crud/students/delete/${_id}`)
-        .then(
-            response=>{
-                console.log(`Registro ${_id} apagado`)
-            }
-        )
-        .catch(error=>console.log(error))
+        if(window.confirm(`Deseja mesmo excluir o elemento correspondente ao ID: ${_id}?`)){
+            axios.delete(`http://localhost:3002/crud/students/delete/${_id}`)
+            .then(response=>{
+                    props.deleteStudentById(_id)
+                }
+            )
+            .catch(error=>console.log(error))
+        }
     }
 
     return(

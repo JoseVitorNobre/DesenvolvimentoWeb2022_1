@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // import { students } from "./data";
 import axios from "axios";
 
@@ -9,6 +9,7 @@ const EditStudent = (props) =>{
     const [ira, setIra] = useState(0);
 
     const params = useParams();
+    const navigate = useNavigate();
     useEffect(
         ()=>{
             axios.get('http://localhost:3002/crud/students/update/' + params.id)
@@ -41,10 +42,12 @@ const EditStudent = (props) =>{
                     //console.log(res.data)
                     //props.history.push('/listStudent');
                     console.log(props)
+                    alert("Aluno editado")
+                    navigate("/listStudent")
                 }
             )
             .catch(error => console.log(error))
-        alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
+        // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
     }
     return(
         <div>

@@ -22,11 +22,18 @@ const ListStudent = () =>{
         ,
         []
     )
+    function deleteStudentById(_id){
+        let studentsTemp = students
+        for(let i = 0; i < studentsTemp.length;i++)
+            if(studentsTemp[i]._id === _id)
+                studentsTemp.splice(i,1)
+        setStudents([...studentsTemp])
+    }
     function generateTable() {
         if (!students) return
         return students.map(
             (student, i) => {
-                return <StudentTableRow student={student} key={i} />
+                return <StudentTableRow student={student} key={i} deleteStudentById={deleteStudentById}/>
             }
         )
     }
