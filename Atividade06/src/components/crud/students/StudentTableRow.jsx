@@ -4,7 +4,7 @@ import axios from "axios";
 const StudentTableRow = (props)=>{
     const {_id, name, course, ira} = props.student;
     function deleteStudent() {
-        if(window.confirm(`Deseja mesmo excluir o elemento correspondente ao ID: ${_id}?`)){
+        if(window.confirm(`Deseja mesmo excluir o aluno correspondente ao ID: ${_id}?`)){
             axios.delete(`http://localhost:3002/crud/students/delete/${_id}`)
             .then(response=>{
                     props.deleteStudentById(_id)

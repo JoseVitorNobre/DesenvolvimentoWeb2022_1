@@ -22,11 +22,18 @@ const ListTeacher = () =>{
         ,
         []
     )
+    function deleteTeacherById(_id){
+        let teachersTemp = teachers
+        for(let i = 0; i < teachersTemp.length;i++)
+            if(teachersTemp[i]._id === _id)
+                teachersTemp.splice(i,1)
+        setTeachers([...teachersTemp])
+    }
     function generateTable(){
         if(!teachers) return
             return teachers.map(
                 (teacher,i)=>{
-                    return <TeacherTableRow teacher={teacher} key={i}/>
+                    return <TeacherTableRow teacher={teacher} key={i} deleteTeacherById={deleteTeacherById}/>
                 }
             );
     }

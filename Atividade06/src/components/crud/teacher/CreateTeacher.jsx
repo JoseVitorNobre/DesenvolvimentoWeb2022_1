@@ -1,20 +1,23 @@
 import React, {useState} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CreateTeacher = () =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
-
+    const navigate = useNavigate();
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
 
         const newTeacher = { name, university, degree }
-        axios.post('http://localhost:3001/teachers', newTeacher)
+        axios.post('http://localhost:3002/crud/teachers/create', newTeacher)
             .then(
                 (res) => {
-                    console.log(res.data.id)
+                    console.log(res.data._id)
+                    alert("Professor criado")
+                    navigate("/listTeacher")
                 }
             )
             .catch(
@@ -22,7 +25,7 @@ const CreateTeacher = () =>{
                     console.log(error)
                 }
             )
-        alert(`Nome: ${name} \nUniversidade: ${university}\nTitulacao: ${degree}`)
+        // alert(`Nome: ${name} \nUniversidade: ${university}\nTitulacao: ${degree}`)
     }
     return(
         <div>

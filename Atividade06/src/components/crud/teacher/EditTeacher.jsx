@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, {useState, useEffect} from "react";
 // import { teachers } from "./data";
 import axios from "axios";
@@ -7,11 +7,11 @@ const EditTeacher = (props) =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
-
+    const navigate = useNavigate();
     const params = useParams();
     useEffect(
         ()=>{
-            axios.get('http://localhost:3001/teachers/' + params.id)
+            axios.get('http://localhost:3002/crud/teachers/update/' + params.id)
                 .then(
                     (res) => {
                         setName(res.data.name)
@@ -35,12 +35,14 @@ const EditTeacher = (props) =>{
         {
            name,university,degree
         }
-        axios.put('http://localhost:3001/teachers/' + params.id, updatedStudent)
+        axios.put('http://localhost:3002/crud/teachers/update/' + params.id, updatedStudent)
             .then(
                 res => {
                     //console.log(res.data)
                     //props.history.push('/listStudent');
                     console.log(props)
+                    alert("Professor editado")
+                    navigate("/listTeacher")
                 }
             )
             .catch(error => console.log(error))
