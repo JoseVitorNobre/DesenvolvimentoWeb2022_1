@@ -5,11 +5,12 @@ var bodyParser = require('body-parser');
 
 var users = require('./routes/users');
 // var students = require('./routes/students/StudentRoute');
-var teachers = require('./routes/teachers/TeacherRoute');
+// var teachers = require('./routes/teachers/TeacherRoute');
 var app = express();
 
 require("./db/mongo.connection")
 var studentRoute = require('./routes/students/students.routes');
+var teacherRoute = require('./routes/teachers/teachers.routes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,7 +26,7 @@ app.use(function(req, res, next) {
 
 app.use('/api/v1/users', users);
 app.use('/crud/students', studentRoute);
-app.use('/crud/teachers', teachers);
+app.use('/crud/teachers', teacherRoute);
 
    
 module.exports = app;
