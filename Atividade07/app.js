@@ -4,9 +4,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var users = require('./routes/users');
-var students = require('./routes/students/StudentRoute');
+// var students = require('./routes/students/StudentRoute');
 var teachers = require('./routes/teachers/TeacherRoute');
 var app = express();
+
+require("./db/mongo.connection")
+var studentRoute = require('./routes/students/students.routes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,7 +24,7 @@ app.use(function(req, res, next) {
 
 
 app.use('/api/v1/users', users);
-app.use('/crud/students', students);
+app.use('/crud/students', studentRoute);
 app.use('/crud/teachers', teachers);
 
    
