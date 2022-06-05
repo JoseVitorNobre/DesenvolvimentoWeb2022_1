@@ -3,6 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 // import { students } from "./data";
 import axios from "axios";
 
+import FirebaseContext from "../../../utils/FirebaseContext";
+import FirebaseStudentService from "../../../services/FireBaseStudentService";
+
+const EditStudentPage = () =>
+    <FirebaseContext.Consumer>
+        {(firebase)=><EditStudent firebase={firebase} />}
+    </FirebaseContext.Consumer>
+
 const EditStudent = (props) =>{
     const [name, setName] = useState("");
     const [course, setCourse] = useState("");
@@ -12,22 +20,31 @@ const EditStudent = (props) =>{
     const navigate = useNavigate();
     useEffect(
         ()=>{
-            axios.get('http://localhost:3002/crud/students/update/' + params.id)
-                .then(
-                    (res) => {
-                        setName(res.data.name)
-                        setCourse(res.data.course)
-                        setIra(res.data.ira)
-                    }
-                )
-                .catch(
-                    (error) => {
-                        console.log(error)
-                    }
-                )
+            // axios.get('http://localhost:3002/crud/students/update/' + params.id)
+            //     .then(
+            //         (res) => {
+            //             setName(res.data.name)
+            //             setCourse(res.data.course)
+            //             setIra(res.data.ira)
+            //         }
+            //     )
+            //     .catch(
+            //         (error) => {
+            //             console.log(error)
+            //         }
+            //     )
+            FirebaseStudentService.retrieve(
+                props.firebase.getFirestoreDb(),
+                (student)=>{
+                    setName(student.name)
+                    setCourse(student.course)
+                    setIra(student.ira)
+                },
+                params.id
+            )
         }
         ,
-        [params.id]
+        [params.id,props]
     )
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
@@ -36,18 +53,25 @@ const EditStudent = (props) =>{
         {
            name,course,ira
         }
-        axios.put('http://localhost:3002/crud/students/update/' + params.id, updatedStudent)
-            .then(
-                res => {
-                    //console.log(res.data)
-                    //props.history.push('/listStudent');
-                    console.log(props)
-                    alert("Aluno editado")
-                    navigate("/listStudent")
-                }
-            )
-            .catch(error => console.log(error))
+        // axios.put('http://localhost:3002/crud/students/update/' + params.id, updatedStudent)
+        //     .then(
+        //         res => {
+        //             //console.log(res.data)
+        //             //props.history.push('/listStudent');
+        //             console.log(props)
+        //             alert("Aluno editado")
+        //             navigate("/listStudent")
+        //         }
+        //     )
+        //     .catch(error => console.log(error))
         // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
+        FirebaseStudentService.update(
+            props.firebase.getFirestoreDb(),
+            ()=>{
+                navigate("/listStudent")
+            },
+            params.id,
+            updatedStudent)
     }
     return(
         <div>
@@ -93,4 +117,4 @@ const EditStudent = (props) =>{
     )
 }
 
-export default EditStudent;
+export default EditStudentPage;

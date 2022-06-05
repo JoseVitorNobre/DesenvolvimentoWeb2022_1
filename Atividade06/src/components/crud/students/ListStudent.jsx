@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from "react";
-// import { students } from "./data";
 import axios from "axios";
-
 import StudentTableRow from "./StudentTableRow";
-const ListStudent = () =>{
+
+import FirebaseContext from "../../../utils/FirebaseContext";
+import FireBaseStudentService from "../../../services/FireBaseStudentService";
+
+const ListStudentPage = () =>
+    <FirebaseContext.Consumer>
+        {
+            (firebase)=><ListStudent firebase={firebase}/>
+        }
+    </FirebaseContext.Consumer>
+const ListStudent = (props) =>{
     const [students, setStudents] = useState([])
     useEffect(
         () => {
-            axios.get("http://localhost:3002/crud/students/list")   
-                .then(
-                    (res) => {
-                        setStudents(res.data)
-                    }
-                )
-                .catch(
-                    (error) => {
-                        console.log(error)
-                    }
-                )
+            // axios.get("http://localhost:3002/crud/students/list")   
+            //     .then(
+            //         (res) => {
+            //             setStudents(res.data)
+            //         }
+            //     )
+            //     .catch(
+            //         (error) => {
+            //             console.log(error)
+            //         }
+            //     )
+            FireBaseStudentService.list_onSnapshot(
+                props.firebase.getFirestoreDb(),
+                (students)=>{
+                    setStudents(students)
+                }
+            )
         }
         ,
-        []
+        [props]
     )
     function deleteStudentById(_id){
         let studentsTemp = students
@@ -33,7 +47,12 @@ const ListStudent = () =>{
         if (!students) return
         return students.map(
             (student, i) => {
-                return <StudentTableRow student={student} key={i} deleteStudentById={deleteStudentById}/>
+                return <StudentTableRow 
+                            student={student} 
+                            key={i} 
+                            deleteStudentById={deleteStudentById}
+                            firestoreDb = {props.firebase.getFirestoreDb()}
+                            />
             }
         )
     }
@@ -56,4 +75,4 @@ const ListStudent = () =>{
         </div>
     )
 }
-export default ListStudent;
+export default ListStudentPage;

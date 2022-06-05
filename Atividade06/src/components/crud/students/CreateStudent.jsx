@@ -1,7 +1,23 @@
 import React, {useState} from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const CreateStudent = () =>{
+import axios from "axios";
+
+import FirebaseContext from "../../../utils/FirebaseContext";
+import FirebaseStudentService from "../../../services/FireBaseStudentService";
+
+const CreateStudentPage = () =>
+    <FirebaseContext.Consumer>
+        {
+            (firebase) => {
+                //if(firebase.getAuthenticatedUser()!=null)
+                if(localStorage.getItem('user')!='null')
+                    return <CreateStudent firebase={firebase} />
+                return
+            }
+        }
+    </FirebaseContext.Consumer>
+    
+function CreateStudent(props){
     const [name, setName] = useState("");
     const [course, setCourse] = useState("");
     const [ira, setIra] = useState(0);
@@ -11,20 +27,30 @@ const CreateStudent = () =>{
         event.preventDefault()
 
         const newStudent = { name, course, ira }
-        axios.post('http://localhost:3002/crud/students/create', newStudent)
-            .then(
-                (res) => {
-                    console.log(res.data._id)
-                    alert("Aluno criado")
-                    navigate("/listStudent")
-                }
-            )
-            .catch(
-                (error) => {
-                    console.log(error)
-                }
-            )
+        // axios.post('http://localhost:3002/crud/students/create', newStudent)
+        //     .then(
+        //         (res) => {
+        //             console.log(res.data._id)
+        //             alert("Aluno criado")
+        //             navigate("/listStudent")
+        //         }
+        //     )
+        //     .catch(
+        //         (error) => {
+        //             console.log(error)
+        //         }
+        //     )
         // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
+        FirebaseStudentService.create(
+            props.firebase.getFirestoreDb(),
+            () => {
+                navigate("/listStudent")
+            },
+            newStudent)
+
+        console.log(name)
+        console.log(course)
+        console.log(ira)
     }
     return(
         <div>
@@ -68,4 +94,4 @@ const CreateStudent = () =>{
     )
 }
 
-export default CreateStudent;
+export default CreateStudentPage;

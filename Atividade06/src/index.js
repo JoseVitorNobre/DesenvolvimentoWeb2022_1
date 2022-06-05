@@ -6,16 +6,16 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// root.render(
-//   <BrowserRouter>
-//     <App/>
-//   </BrowserRouter>
-// )
+//Firebase
+import Firebase from './utils/Firebase'
+import FirebaseContext from './utils/FirebaseContext'
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App/>
-  </BrowserRouter>,
+  <FirebaseContext.Provider value={new Firebase()}> 
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
+  </FirebaseContext.Provider>,
   document.getElementById('root')
 );
 
