@@ -13,10 +13,12 @@ function Home(props) {
 
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        setLoading(true)
         //const user = { login, password }
         //console.log(user)
         FirebaseUserService.login(
@@ -24,14 +26,38 @@ function Home(props) {
             login,
             password,
             (user)=>{
-                //console.log(user.email)
-                props.firebase.setUser(user)
-                props.setLogged(true)
-                navigate('/listStudent')
+                if(user != null){
+                    //console.log(user.email)
+                    props.firebase.setUser(user)
+                    props.setLogged(true)
+                    navigate('/listStudent')
+                }else{
+                    setLoading(false)
+                }
             }
         )
     }
+    const renderSubmitButton = () =>{
+        if(loading){
+            return(
+                <div style={{paddingTop: 20}}>
+                    <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only" style={{paddingLeft: 5 }}>Carregando...</span>
+                    </button>
+                </div>
+            )
+        }else{
+            return(
+                <div>
+                    <div className="form-group" style={{ paddingTop: 20 }}>
+                        <input type="submit" value="Efetuar Login" className="btn btn-primary" />
+                    </div>
+                </div>
+            )
+        }
 
+    }
     return (
         <div className="container-login" style={{marginTop:40}}>
             <main style={{width:'40%'}}>
@@ -43,19 +69,19 @@ function Home(props) {
                             className="form-control"
                             value={(login == null || login === undefined) ? "" : login}
                             name="login"
-                            onChange={(event) => { setLogin(event.target.value) }} />
+                            onChange={(event) => { setLogin(event.target.value) }} 
+                            autoComplete="off"/>
                     </div>
                     <div className="form-group">
                         <label>Senha: </label>
-                        <input type="text"
+                        <input type="password"
                             className="form-control"
                             value={(password == null || password === undefined) ? "" : password}
                             name="password"
-                            onChange={(event) => { setPassword(event.target.value) }} />
+                            onChange={(event) => { setPassword(event.target.value) }}
+                            autocomplete="off" />
                     </div>
-                    <div className="form-group" style={{ paddingTop: 20 }}>
-                        <input type="submit" value="Efetuar Login" className="btn btn-primary" />
-                    </div>
+                    {renderSubmitButton()}
                 </form>
             </main>
         </div>

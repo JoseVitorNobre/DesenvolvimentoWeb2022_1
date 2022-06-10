@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import StudentTableRow from "./StudentTableRow";
 
 import FirebaseContext from "../../../utils/FirebaseContext";
+import RestrictedPage from "../../../utils/RestrictedPage";
 import FireBaseStudentService from "../../../services/FireBaseStudentService";
 
 const ListStudentPage = () =>
     <FirebaseContext.Consumer>
         {
-            (firebase)=><ListStudent firebase={firebase}/>
+            (firebase)=> 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <ListStudent firebase={firebase}/>
+                </RestrictedPage>
         }
     </FirebaseContext.Consumer>
 const ListStudent = (props) =>{
     const [students, setStudents] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(
         () => {
             // axios.get("http://localhost:3002/crud/students/list")   
@@ -26,10 +30,12 @@ const ListStudent = (props) =>{
             //             console.log(error)
             //         }
             //     )
+            setLoading(true)
             FireBaseStudentService.list_onSnapshot(
                 props.firebase.getFirestoreDb(),
                 (students)=>{
                     setStudents(students)
+                    setLoading(false)
                 }
             )
         }
@@ -44,17 +50,31 @@ const ListStudent = (props) =>{
         setStudents([...studentsTemp])
     }
     function generateTable() {
-        if (!students) return
-        return students.map(
-            (student, i) => {
-                return <StudentTableRow 
-                            student={student} 
-                            key={i} 
-                            deleteStudentById={deleteStudentById}
-                            firestoreDb = {props.firebase.getFirestoreDb()}
-                            />
-            }
-        )
+        if(loading){
+            return (
+                <tr>
+                    <td colSpan={5}>
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }else{
+            if (!students) return
+            return students.map(
+                (student, i) => {
+                    return <StudentTableRow 
+                                student={student} 
+                                key={i} 
+                                deleteStudentById={deleteStudentById}
+                                firestoreDb = {props.firebase.getFirestoreDb()}
+                                />
+                }
+            )
+        }
     }
     return(
         <div>

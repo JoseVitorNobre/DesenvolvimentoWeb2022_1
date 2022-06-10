@@ -31,7 +31,7 @@ function App(props){
   const renderUserLogoutButton = () => {
     if (props.firebase.getUser() != null)
       return (
-    	<div style={{ marginRight: 20 }}>
+    	<div style={{ marginRight: 20, color: "white" }}>
           Olá, josevitortinf@gmail.com
           <button className='btn btn-warning' style={{ marginLeft: 10 }} onClick={() => logout()} >Logout</button>
         </div>
