@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-// import { teachers } from "./data";
 import TeacherTableRow from "./TeacherTableRow";
-import axios from "axios";
+import RestrictedPage from "../../../utils/RestrictedPage";
+import FirebaseContext from "../../../utils/FirebaseContext";
+import FireBaseTeacherService from "../../../services/FireBaseTeacherService";
 
-const ListTeacher = () =>{
+const ListTeacherPage = () =>
+    <FirebaseContext.Consumer>
+        {
+            (firebase)=> 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <ListTeacher firebase={firebase}/>
+                </RestrictedPage>
+        }
+    </FirebaseContext.Consumer>
+const ListTeacher = (props) =>{
     const [teachers, setTeachers] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(
         () => {
-            axios.get("http://localhost:3002/crud/teachers/list")
-                .then(
-                    (res) => {
-                        setTeachers(res.data)
-                    }
-                )
-                .catch(
-                    (error) => {
-                        console.log(error)
-                    }
-                )
+            setLoading(true)
+            FireBaseTeacherService.list_onSnapshot(
+                props.firebase.getFirestoreDb(),
+                (teachers)=>{
+                    setTeachers(teachers)
+                    setLoading(false)
+                }
+            )
         }
         ,
-        []
+        [props]
     )
     function deleteTeacherById(_id){
         let teachersTemp = teachers
@@ -29,13 +37,33 @@ const ListTeacher = () =>{
                 teachersTemp.splice(i,1)
         setTeachers([...teachersTemp])
     }
-    function generateTable(){
-        if(!teachers) return
+
+    function generateTable() {
+        if(loading){
+            return (
+                <tr>
+                    <td colSpan={5}>
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }else{
+            if (!teachers) return
             return teachers.map(
-                (teacher,i)=>{
-                    return <TeacherTableRow teacher={teacher} key={i} deleteTeacherById={deleteTeacherById}/>
+                (teacher, i) => {
+                    return <TeacherTableRow 
+                                teacher={teacher} 
+                                key={i} 
+                                deleteTeacherById={deleteTeacherById}
+                                firestoreDb = {props.firebase.getFirestoreDb()}
+                                />
                 }
-            );
+            )
+        }
     }
     return(
         <div>
@@ -56,4 +84,4 @@ const ListTeacher = () =>{
         </div>
     )
 }
-export default ListTeacher;
+export default ListTeacherPage;

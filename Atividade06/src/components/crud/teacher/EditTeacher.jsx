@@ -1,51 +1,77 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, {useState, useEffect} from "react";
-// import { teachers } from "./data";
-import axios from "axios";
+
+import FirebaseContext from "../../../utils/FirebaseContext";
+import RestrictedPage from "../../../utils/RestrictedPage";
+import FirebaseTeacherService from "../../../services/FireBaseTeacherService";
+
+const EditTeacherPage = () =>
+    <FirebaseContext.Consumer>
+        {
+            (firebase)=> 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <EditTeacher firebase={firebase} />
+                </RestrictedPage>
+        }
+    </FirebaseContext.Consumer>
 
 const EditTeacher = (props) =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const params = useParams();
     useEffect(
         ()=>{
-            axios.get('http://localhost:3002/crud/teachers/update/' + params.id)
-                .then(
-                    (res) => {
-                        setName(res.data.name)
-                        setUniversity(res.data.university)
-                        setDegree(res.data.degree)
-                    }
-                )
-                .catch(
-                    (error) => {
-                        console.log(error)
-                    }
-                )
+            FirebaseTeacherService.retrieve(
+                props.firebase.getFirestoreDb(),
+                (teacher)=>{
+                    setName(teacher.name)
+                    setUniversity(teacher.university)
+                    setDegree(teacher.degree)
+                },
+                params.id
+            )
         }
         ,
-        [params.id]
+        [params.id,props]
     )
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
-        const updatedStudent =
+        setLoading(true)
+        const updatedTeacher =
         {
            name,university,degree
         }
-        axios.put('http://localhost:3002/crud/teachers/update/' + params.id, updatedStudent)
-            .then(
-                res => {
-                    //console.log(res.data)
-                    //props.history.push('/listStudent');
-                    console.log(props)
-                    alert("Professor editado")
-                    navigate("/listTeacher")
-                }
+        FirebaseTeacherService.update(
+            props.firebase.getFirestoreDb(),
+            ()=>{
+                navigate("/listTeacher")
+            },
+            params.id,
+            updatedTeacher)
+    }
+    const renderSubmitButton = () =>{
+        if(loading){
+            return(
+                <div style={{paddingTop: 20}}>
+                    <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only" style={{paddingLeft: 10 }}>Carregando...</span>
+                    </button>
+                </div>
             )
-            .catch(error => console.log(error))
+        }else{
+            return(
+                <div>
+                    <div className="form-group" style={{ paddingTop: 10 }}>
+                        <input type="submit" value="Editar Professor" className="btn btn-primary" />
+                    </div>
+                </div>
+            )
+        }
     }
     return(
         <div>
@@ -78,12 +104,10 @@ const EditTeacher = (props) =>{
                            onChange={(event)=>setDegree(event.target.value)}
                            />
                 </div>
-                <div className="form-group" style={{paddingTop: 10}}>
-                    <input type="submit" value="Editar Professor" className="btn btn-primary"/>
-                </div>
+                {renderSubmitButton()}
             </form>
         </div>
     )
 }
 
-export default EditTeacher;
+export default EditTeacherPage;

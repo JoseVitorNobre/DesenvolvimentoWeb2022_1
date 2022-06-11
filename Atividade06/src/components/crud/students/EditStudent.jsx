@@ -1,38 +1,29 @@
 import React, {useState, useEffect} from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import { students } from "./data";
-import axios from "axios";
 
 import FirebaseContext from "../../../utils/FirebaseContext";
 import FirebaseStudentService from "../../../services/FireBaseStudentService";
+import RestrictedPage from "../../../utils/RestrictedPage";
 
 const EditStudentPage = () =>
     <FirebaseContext.Consumer>
-        {(firebase)=><EditStudent firebase={firebase} />}
+        {
+            (firebase)=> 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <EditStudent firebase={firebase} />
+                </RestrictedPage>
+        }
     </FirebaseContext.Consumer>
 
 const EditStudent = (props) =>{
     const [name, setName] = useState("");
     const [course, setCourse] = useState("");
     const [ira, setIra] = useState(0);
-
+    const [loading, setLoading] = useState(false)
     const params = useParams();
     const navigate = useNavigate();
     useEffect(
         ()=>{
-            // axios.get('http://localhost:3002/crud/students/update/' + params.id)
-            //     .then(
-            //         (res) => {
-            //             setName(res.data.name)
-            //             setCourse(res.data.course)
-            //             setIra(res.data.ira)
-            //         }
-            //     )
-            //     .catch(
-            //         (error) => {
-            //             console.log(error)
-            //         }
-            //     )
             FirebaseStudentService.retrieve(
                 props.firebase.getFirestoreDb(),
                 (student)=>{
@@ -49,22 +40,11 @@ const EditStudent = (props) =>{
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
+        setLoading(true)
         const updatedStudent =
         {
            name,course,ira
         }
-        // axios.put('http://localhost:3002/crud/students/update/' + params.id, updatedStudent)
-        //     .then(
-        //         res => {
-        //             //console.log(res.data)
-        //             //props.history.push('/listStudent');
-        //             console.log(props)
-        //             alert("Aluno editado")
-        //             navigate("/listStudent")
-        //         }
-        //     )
-        //     .catch(error => console.log(error))
-        // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
         FirebaseStudentService.update(
             props.firebase.getFirestoreDb(),
             ()=>{
@@ -72,6 +52,26 @@ const EditStudent = (props) =>{
             },
             params.id,
             updatedStudent)
+    }
+    const renderSubmitButton = () =>{
+        if(loading){
+            return(
+                <div style={{paddingTop: 20}}>
+                    <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only" style={{paddingLeft: 10 }}>Carregando...</span>
+                    </button>
+                </div>
+            )
+        }else{
+            return(
+                <div>
+                    <div className="form-group" style={{ paddingTop: 10 }}>
+                        <input type="submit" value="Editar Estudante" className="btn btn-primary" />
+                    </div>
+                </div>
+            )
+        }
     }
     return(
         <div>
@@ -109,9 +109,7 @@ const EditStudent = (props) =>{
                            onChange={(event)=>setIra(event.target.value)}
                            />
                 </div>
-                <div className="form-group" style={{paddingTop: 10}}>
-                    <input type="submit" value="Editar Estudante" className="btn btn-primary"/>
-                </div>
+                {renderSubmitButton()}
             </form>
         </div>
     )

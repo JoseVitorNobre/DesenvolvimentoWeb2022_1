@@ -1,31 +1,57 @@
 import React, {useState} from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const CreateTeacher = () =>{
+import FirebaseContext from "../../../utils/FirebaseContext";
+import RestrictedPage from "../../../utils/RestrictedPage";
+import FirebaseTeacherService from "../../../services/FireBaseTeacherService";
+
+const CreateTeacherPage = () =>
+    <FirebaseContext.Consumer>
+        {
+            (firebase) => 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <CreateTeacher firebase={firebase} />
+                </RestrictedPage>
+            
+        }
+    </FirebaseContext.Consumer>
+const CreateTeacher = (props) =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
-
+        setLoading(true)
         const newTeacher = { name, university, degree }
-        axios.post('http://localhost:3002/crud/teachers/create', newTeacher)
-            .then(
-                (res) => {
-                    console.log(res.data._id)
-                    alert("Professor criado")
-                    navigate("/listTeacher")
-                }
+        FirebaseTeacherService.create(
+            props.firebase.getFirestoreDb(),
+            () => {
+                navigate("/listTeacher")
+            },
+            newTeacher)
+    }
+    const renderSubmitButton = () =>{
+        if(loading){
+            return(
+                <div style={{paddingTop: 20}}>
+                    <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only" style={{paddingLeft: 10 }}>Carregando...</span>
+                    </button>
+                </div>
             )
-            .catch(
-                (error) => {
-                    console.log(error)
-                }
+        }else{
+            return(
+                <div>
+                    <div className="form-group" style={{ paddingTop: 10 }}>
+                        <input type="submit" value="Criar Professor" className="btn btn-primary" />
+                    </div>
+                </div>
             )
-        // alert(`Nome: ${name} \nUniversidade: ${university}\nTitulacao: ${degree}`)
+        }
     }
     return(
         <div>
@@ -58,12 +84,10 @@ const CreateTeacher = () =>{
                            onChange={(event)=>setDegree(event.target.value)}
                            />
                 </div>
-                <div className="form-group" style={{paddingTop: 10}}>
-                    <input type="submit" value="Criar Professor" className="btn btn-primary"/>
-                </div>
+                {renderSubmitButton()}
             </form>
         </div>
     )
 }
 
-export default CreateTeacher;
+export default CreateTeacherPage;

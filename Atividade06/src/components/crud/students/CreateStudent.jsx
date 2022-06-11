@@ -1,19 +1,18 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import FirebaseContext from "../../../utils/FirebaseContext";
 import FirebaseStudentService from "../../../services/FireBaseStudentService";
+import RestrictedPage from "../../../utils/RestrictedPage";
 
 const CreateStudentPage = () =>
     <FirebaseContext.Consumer>
         {
-            (firebase) => {
-                //if(firebase.getAuthenticatedUser()!=null)
-                if(localStorage.getItem('user')!='null')
-                    return <CreateStudent firebase={firebase} />
-                return
-            }
+            (firebase) => 
+                <RestrictedPage isLogged={firebase.getUser() != null}>
+                    <CreateStudent firebase={firebase} />
+                </RestrictedPage>
+            
         }
     </FirebaseContext.Consumer>
     
@@ -22,25 +21,12 @@ function CreateStudent(props){
     const [course, setCourse] = useState("");
     const [ira, setIra] = useState(0);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
-
+        setLoading(true)
         const newStudent = { name, course, ira }
-        // axios.post('http://localhost:3002/crud/students/create', newStudent)
-        //     .then(
-        //         (res) => {
-        //             console.log(res.data._id)
-        //             alert("Aluno criado")
-        //             navigate("/listStudent")
-        //         }
-        //     )
-        //     .catch(
-        //         (error) => {
-        //             console.log(error)
-        //         }
-        //     )
-        // alert(`Nome: ${name} \nCurso: ${course}\nIRA: ${ira}`)
         FirebaseStudentService.create(
             props.firebase.getFirestoreDb(),
             () => {
@@ -51,6 +37,26 @@ function CreateStudent(props){
         console.log(name)
         console.log(course)
         console.log(ira)
+    }
+    const renderSubmitButton = () =>{
+        if(loading){
+            return(
+                <div style={{paddingTop: 20}}>
+                    <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only" style={{paddingLeft: 10 }}>Carregando...</span>
+                    </button>
+                </div>
+            )
+        }else{
+            return(
+                <div>
+                    <div className="form-group" style={{ paddingTop: 10 }}>
+                        <input type="submit" value="Criar Estudante" className="btn btn-primary" />
+                    </div>
+                </div>
+            )
+        }
     }
     return(
         <div>
@@ -86,9 +92,7 @@ function CreateStudent(props){
                            onChange={(event)=>setIra(event.target.value)}
                            />
                 </div>
-                <div className="form-group" style={{paddingTop: 10}}>
-                    <input type="submit" value="Criar Estudante" className="btn btn-primary"/>
-                </div>
+                {renderSubmitButton()}
             </form>
         </div>
     )

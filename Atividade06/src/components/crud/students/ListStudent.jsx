@@ -19,17 +19,6 @@ const ListStudent = (props) =>{
     const [loading, setLoading] = useState(false)
     useEffect(
         () => {
-            // axios.get("http://localhost:3002/crud/students/list")   
-            //     .then(
-            //         (res) => {
-            //             setStudents(res.data)
-            //         }
-            //     )
-            //     .catch(
-            //         (error) => {
-            //             console.log(error)
-            //         }
-            //     )
             setLoading(true)
             FireBaseStudentService.list_onSnapshot(
                 props.firebase.getFirestoreDb(),

@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import FirebaseUserService from "../services/FireBaseUserService";
 import FirebaseContext from "../utils/FirebaseContext";
 
+import MyToast from '../utils/MyToast';
+
 const HomePage = (props) =>
 <FirebaseContext.Consumer>
     {(firebase)=><Home firebase={firebase} setLogged={props.setLogged}/>}
@@ -14,6 +16,7 @@ function Home(props) {
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
+    const [showToast, setShowToast] = useState(false)
     const navigate = useNavigate()
 
     const handleSubmit = (event) => {
@@ -33,6 +36,7 @@ function Home(props) {
                     navigate('/listStudent')
                 }else{
                     setLoading(false)
+                    setShowToast(true)
                 }
             }
         )
@@ -56,10 +60,19 @@ function Home(props) {
                 </div>
             )
         }
-
+    }
+    const renderToast = () => {
+        return <MyToast
+            show={showToast}
+            header='Erro!'
+            body='Login e/ou Senha incorreto(s).'
+            setShowToast={setShowToast}
+            bg='warning'
+        />
     }
     return (
         <div className="container-login" style={{marginTop:40}}>
+            {renderToast()}
             <main style={{width:'40%'}}>
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
