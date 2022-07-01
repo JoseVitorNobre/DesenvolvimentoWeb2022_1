@@ -5,33 +5,69 @@ import FirebaseContext from "../../../utils/FirebaseContext";
 import RestrictedPage from "../../../utils/RestrictedPage";
 import FirebaseTeacherService from "../../../services/FireBaseTeacherService";
 
-const CreateTeacherPage = () =>
+const CreateTeacherPage = (props) =>
     <FirebaseContext.Consumer>
         {
-            (firebase) => 
-                <RestrictedPage isLogged={firebase.getUser() != null}>
-                    <CreateTeacher firebase={firebase} />
+            (firebase)=>
+                <RestrictedPage 
+                    isLogged={firebase.getUser()!=null}
+                    isEmailVerified={(firebase.getUser() != null)?firebase.getUser().emailVerified:false} >
+                    <CreateTeacher 
+                        firebase={firebase}
+                        setToast={props.setToast}
+                        setShowToast={props.setShowToast}/>
                 </RestrictedPage>
-            
+        
         }
     </FirebaseContext.Consumer>
 const CreateTeacher = (props) =>{
     const [name, setName] = useState("");
     const [university, setUniversity] = useState("");
     const [degree, setDegree] = useState("");
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false)
+    const [validate, setValidate] = useState({name:'',university:'',degree:''})
+
+    const validateFields = ()=> {
+        let res = true
+        setValidate({name:'',university:'',degree:''})
+        if(name === '' || university === '' || degree === ''){
+            props.setToast({header:'Erro!',body:'Preencha todos os campos.'})
+            props.setShowToast(true)
+            setLoading(false)
+            res = false
+            let validateObj = {name:'',university:'',degree:''}
+            if (name === '') validateObj.name = 'is-invalid'
+            if (university === '') validateObj.university = 'is-invalid'
+            if (degree === '') validateObj.degree = 'is-invalid'
+            setValidate(validateObj)
+        }
+
+        return res
+    }
     //Aqui so serve para exibir os dados que foram submetidos no form
     const handleSubmit = (event) =>{
         event.preventDefault()
         setLoading(true)
+        if(!validateFields()) return
         const newTeacher = { name, university, degree }
         FirebaseTeacherService.create(
             props.firebase.getFirestoreDb(),
-            () => {
-                navigate("/listTeacher")
+            (_id) => {
+                if (_id != null) {
+                    props.setToast({header:'Sucesso!',body:`Professor ${name} criado com sucesso com id ${_id}.`})
+                    props.setShowToast(true)
+                    setLoading(false)
+                    navigate("/listTeacher")
+                }else{
+                    props.setToast({header:'Erro!',body:`Não foi possível criar o professor ${name}!`})
+                    props.setShowToast(true)
+                    setLoading(false)
+                }
             },
-            newTeacher)
+            newTeacher
+        )
     }
     const renderSubmitButton = () =>{
         if(loading){
@@ -60,7 +96,7 @@ const CreateTeacher = (props) =>{
                 <div className="form-group">
                     <label>Nome</label>
                     <input type="text" 
-                           className="form-control"
+                           className={`form-control ${validate.name}`}
                            value={(name==null || name===undefined ? "" : name)}
                            name="name"
                            onChange={(event)=>setName(event.target.value)}
@@ -69,7 +105,7 @@ const CreateTeacher = (props) =>{
                 <div className="form-group">
                     <label>Universidade</label>
                     <input type="text" 
-                           className="form-control"
+                           className={`form-control ${validate.university}`}
                            value={(university==null || university===undefined ? "" : university)}
                            name="university"
                            onChange={(event)=>setUniversity(event.target.value)}
@@ -78,7 +114,7 @@ const CreateTeacher = (props) =>{
                 <div className="form-group">
                     <label>Titulação</label>
                     <input type="text" 
-                           className="form-control"
+                           className={`form-control ${validate.degree}`}
                            value={(degree==null || degree===undefined ? "" : degree)}
                            name="degree"
                            onChange={(event)=>setDegree(event.target.value)}

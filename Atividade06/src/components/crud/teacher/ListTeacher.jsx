@@ -7,10 +7,15 @@ import FireBaseTeacherService from "../../../services/FireBaseTeacherService";
 const ListTeacherPage = () =>
     <FirebaseContext.Consumer>
         {
-            (firebase)=> 
-                <RestrictedPage isLogged={firebase.getUser() != null}>
-                    <ListTeacher firebase={firebase}/>
+            (firebase) =>
+                <RestrictedPage 
+                    isLogged={firebase.getUser() != null} 
+                    isEmailVerified={(firebase.getUser() != null)?firebase.getUser().emailVerified:false}
+                    auth={firebase.getAuthentication()}
+                    >
+                    <ListTeacher firebase={firebase} />
                 </RestrictedPage>
+
         }
     </FirebaseContext.Consumer>
 const ListTeacher = (props) =>{
