@@ -8,12 +8,18 @@ import FireBaseStudentService from "../../../services/FireBaseStudentService";
 const ListStudentPage = () =>
     <FirebaseContext.Consumer>
         {
-            (firebase)=> 
-                <RestrictedPage isLogged={firebase.getUser() != null}>
-                    <ListStudent firebase={firebase}/>
+            (firebase) =>
+                <RestrictedPage 
+                    isLogged={firebase.getUser() != null} 
+                    isEmailVerified={(firebase.getUser() != null)?firebase.getUser().emailVerified:false}
+                    auth={firebase.getAuthentication()}
+                    >
+                    <ListStudent firebase={firebase} />
                 </RestrictedPage>
+
         }
     </FirebaseContext.Consumer>
+
 const ListStudent = (props) =>{
     const [students, setStudents] = useState([])
     const [loading, setLoading] = useState(false)
@@ -29,7 +35,7 @@ const ListStudent = (props) =>{
             )
         }
         ,
-        [props]
+        [props.firebase]
     )
     function deleteStudentById(_id){
         let studentsTemp = students
